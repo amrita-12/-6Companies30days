@@ -1,0 +1,140 @@
+#question 1
+#You are given an array of strings tokens that represents an arithmetic expression in a Reverse Polish Notation.
+
+Evaluate the expression. Return an integer that represents the value of the expression.
+
+Note that:
+
+The valid operators are '+', '-', '*', and '/'.
+Each operand may be an integer or another expression.
+The division between two integers always truncates toward zero.
+There will not be any division by zero.
+The input represents a valid arithmetic expression in a reverse polish notation.
+The answer and all the intermediate calculations can be represented in a 32-bit integer.
+
+#Solution
+    int evalRPN(vector<string>& tokens) {
+        stack<long long int>st;
+        for(int i=0;i<tokens.size();i++)
+        {
+            if(tokens[i]=="+")
+            {
+                int second=st.top();st.pop();
+                int first =st.top();st.pop();
+                st.push(first+second);
+            }
+           else if(tokens[i]=="-")
+            {
+                int second=st.top();st.pop();
+                int first =st.top();st.pop();
+                st.push(first-second);
+            }
+           else if(tokens[i]=="/")
+            {
+                int second=st.top();st.pop();
+                int first =st.top();st.pop();
+                st.push(first/second);
+            }
+          else  if(tokens[i]=="*")
+            {
+                int second=st.top();st.pop();
+                int first =st.top();st.pop();
+                st.push(first*second);
+            }
+            else{
+                st.push(stol(tokens[i]));
+            }
+
+        }
+        return st.top();
+    }
+    
+    
+  #Question 2--Find all valid combinations of k numbers that sum up to n such that the following conditions are true:
+
+Only numbers 1 through 9 are used.
+Each number is used at most once.
+Return a list of all possible valid combinations. The list must not contain the same combination twice, and the combinations may be returned in any order.
+
+#solution
+vector<vector<int>>ans;
+void solve(int n,int sum,vector<int>&temp,int start)
+{
+     if(n==0&&sum==0)
+    ans.push_back(temp);
+    if(n==0||sum==0)
+    return;
+   
+    for(int i=start;i<=9;i++)
+    {
+        if(sum>=i)
+        {
+           
+           temp.push_back(i);
+           solve(n-1,sum-i,temp,i+1);
+           temp.pop_back();
+           
+
+        }
+       
+    }
+
+}
+
+    vector<vector<int>> combinationSum3(int k, int n) {
+       
+       vector<int>temp;
+        solve(k,n,temp,1);
+       
+        return ans;
+    }
+    
+    
+  #question 3 -- You are playing the Bulls and Cows game with your friend.
+
+You write down a secret number and ask your friend to guess what the number is. When your friend makes a guess, you provide a hint with the following info:
+
+The number of "bulls", which are digits in the guess that are in the correct position.
+The number of "cows", which are digits in the guess that are in your secret number but are located in the wrong position. Specifically, the non-bull digits in the guess that could be rearranged such that they become bulls.
+Given the secret number secret and your friend's guess guess, return the hint for your friend's guess.
+
+The hint should be formatted as "xAyB", where x is the number of bulls and y is the number of cows. Note that both secret and guess may contain duplicate digits.
+
+#solution
+string getHint(string secret, string guess) {
+       int bulls=0,cows=0;
+       vector<set<int>>num1(10);
+        vector<set<int>>num2(10);
+        for(int i=0;i<secret.size();i++)
+        {
+            int x = secret[i]-'0';
+            num1[x].insert(i);
+        }
+         for(int i=0;i<secret.size();i++)
+        {
+            int x = guess[i]-'0';
+            num2[x].insert(i);
+        }
+        for(int i=0;i<=9;i++)
+        {
+            int x = num1[i].size();
+            int y=num2[i].size();
+            if(x==0||y==0)
+            continue;
+            int c=0;
+            for(auto it:num1[i])
+            {
+                if(num2[i].find(it)!=num2[i].end())
+                c++;
+            }
+            
+            cows += min(x,y)-c;
+           
+            bulls+=c;
+
+        }
+        string s="";
+        s+=to_string(bulls)+'A'+to_string(cows)+'B';
+        return s;
+
+    }
