@@ -1,0 +1,212 @@
+9.Number of Pairs Satisfying Inequality--
+You are given two 0-indexed integer arrays nums1 and nums2, each of size n, and an integer diff. Find the number of pairs (i, j) such that:
+
+0 <= i < j <= n - 1 and
+nums1[i] - nums1[j] <= nums2[i] - nums2[j] + diff.
+Return the number of pairs that satisfy the conditions.
+
+Solution-
+class Solution {
+public:
+long long merge(vector<int>& nums,int low,int mid,int high ,int d)
+{
+     int l=low,r=mid+1;
+        long long ans=0;
+        while(l<=mid && r<=high){
+            if(nums[l]<=nums[r]+d){
+                ans+=high-r+1;
+                l++;
+            }
+            else{
+                r++;
+            }
+        }
+        sort(nums.begin()+low, nums.begin()+high+1);return ans;
+}
+long long solve(vector<int>& nums,int start,int end,int diff)
+{
+    long long res=0;
+    if(end>start)
+    {
+        int mid = start+(end-start)/2;
+        res+=solve(nums,start,mid,diff);
+        res+=solve(nums,mid+1,end,diff);
+        res+=merge(nums,start,mid,end,diff);
+    }
+    return res;
+}
+    long long numberOfPairs(vector<int>& nums1, vector<int>& nums2, int diff) {
+        
+        int n=nums1.size();vector<int>arr(n);
+        for(int i=0;i<nums1.size();i++)
+        {
+            arr[i]=nums1[i]-nums2[i];
+        }
+        return
+        solve(arr,0,n-1,diff);
+    }
+};
+
+10. Given an integer array nums, you need to find one continuous subarray that if you only sort this subarray in ascending order, then the whole array will be sorted in ascending order.
+
+Return the shortest such subarray and output its length.
+
+ class Solution {
+public:
+    int findUnsortedSubarray(vector<int>& nums) {
+        if(nums.size()<=1)
+        return 0;
+        int small = INT_MAX,large=INT_MIN;
+        for(int i=0;i<nums.size();i++)
+        {
+            if(i==0)
+            {
+                if(nums[i]>nums[i+1])
+                {
+                    small=min(small,nums[i]);
+                    large=max(large,nums[i]);
+                }
+
+            }
+            else if(i==nums.size()-1)
+            {
+                if(nums[i]<nums[i-1])
+                {
+                     small=min(small,nums[i]);
+                    large=max(large,nums[i]);
+                }
+            }
+            else{
+                if(nums[i-1]>nums[i]||nums[i]>nums[i+1])
+                {
+                     small=min(small,nums[i]);
+                    large=max(large,nums[i]);
+                }
+            }
+        }
+        if(small==INT_MAX && large == INT_MIN)
+        return 0;
+         int i,j,n=nums.size();
+        for(i=0;i<n;i++)
+        {
+            if(nums[i]>small)
+                break;
+        }
+        for(j=n-1;j>=0;j--)
+        {
+            if(nums[j]<large)
+                break;
+        }
+        return j-i+1;
+    }
+};
+
+11.You are in a city that consists of n intersections numbered from 0 to n - 1 with bi-directional roads between some intersections. The inputs are generated such that you can reach any intersection from any other intersection and that there is at most one road between any two intersections.
+
+You are given an integer n and a 2D integer array roads where roads[i] = [ui, vi, timei] means that there is a road between intersections ui and vi that takes timei minutes to travel. You want to know in how many ways you can travel from intersection 0 to intersection n - 1 in the shortest amount of time.
+
+Return the number of ways you can arrive at your destination in the shortest amount of time. Since the answer may be large, return it modulo 109 + 7.
+
+Solution-#define ll long long
+class Solution {
+public:
+ int MOD = 1e9 + 7;
+    int countPaths(int n, vector<vector<int>>& roads) {
+         vector<pair<ll,ll>> adj[n];
+       for(auto it:roads){
+           adj[it[0]].push_back({it[1],it[2]});
+           adj[it[1]].push_back({it[0],it[2]});
+       }
+       
+       priority_queue<pair<ll,ll>,vector<pair<ll,ll>>,greater<pair<ll,ll>>> pq;
+       vector<ll> dist(n,LONG_MAX), ways(n,0);
+       dist[0] = 0;
+       ways[0] = 1;
+       
+       pq.push({0,0});
+       
+       while(!pq.empty()){
+           ll dis = pq.top().first;
+           ll node = pq.top().second;
+           pq.pop();
+           
+           for(auto it: adj[node]){
+               ll adjNode = it.first;
+               ll edW = it.second;
+               //this is the first time I am coming
+               //with the short distance
+               if(dis + edW < dist[adjNode]){
+                   dist[adjNode] = dis + edW;
+                   pq.push({dis + edW,adjNode});
+                   ways[adjNode] = ways[node];
+               }
+               else if(dis +edW == dist[adjNode]){
+                   ways[adjNode] = (ways[adjNode] + ways[node])%MOD;
+               }
+           }
+       }
+       return ways[n-1];
+    }
+};
+
+13 n passengers board an airplane with exactly n seats. The first passenger has lost the ticket and picks a seat randomly. But after that, the rest of the passengers will:
+
+Take their own seat if it is still available, and
+Pick other seats randomly when they find their seat occupied
+Return the probability that the nth person gets his own seat.
+Sol
+
+class Solution {
+public:
+    double nthPersonGetsNthSeat(int n) {
+        if(n<=1)
+        return 1;
+       
+        return 0.5;}
+  
+};
+
+14.You are given two positive integer arrays nums and numsDivide. You can delete any number of elements from nums.
+
+Return the minimum number of deletions such that the smallest element in nums divides all the elements of numsDivide. If this is not possible, return -1.
+
+Note that an integer x divides y if y % x == 0.
+class Solution {
+public:
+
+    int minOperations(vector<int>&A , vector<int>& numsDivide) {
+     int g = numsDivide[0];
+        for (int a: numsDivide)
+            g = gcd(g, a);
+        sort(A.begin(), A.end());
+        for (int i = 0; i < A.size() && A[i] <= g; ++i)
+            if (g % A[i] == 0)
+                return i;
+        return -1;
+      
+    }
+};
+
+15.Given a string s consisting only of characters a, b and c.
+
+Return the number of substrings containing at least one occurrence of all these characters a, b and c.
+solution
+class Solution {
+public:
+    int numberOfSubstrings(string s) {
+        int a=-1,b=-1,c=-1,ans=0;
+        int i=0;
+        while(i<s.size())
+        {
+            if(s[i]=='a')
+            a=i;
+            else if(s[i]=='b')
+            b=i;
+            else
+            c=i;
+            ans+=min(a,min(b,c))+1;
+            i++;
+        }
+        return ans;
+    }
+};
