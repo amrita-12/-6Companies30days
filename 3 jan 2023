@@ -148,6 +148,36 @@ public:
        return ways[n-1];
     }
 };
+12.A string is called a happy prefix if is a non-empty prefix which is also a suffix (excluding itself).
+
+Given a string s, return the longest happy prefix of s. Return an empty string "" if no such prefix exists.
+
+Solution--
+class Solution {
+public:
+    string longestPrefix(string s) {
+        int i=1,len=0;
+        vector<int>lps(s.size(),0);
+        while(i<s.size())
+        {
+            if(s[i]==s[len])
+            {
+                len++;
+                lps[i]=len;i++;
+            }
+            else{
+                if(len>0
+                )
+                len=lps[len-1];
+                else{
+                    lps[i]=0;i++;
+                }
+            }
+        }
+        return s.substr(0,lps[s.size()-1]);
+    }
+};
+
 
 13 n passengers board an airplane with exactly n seats. The first passenger has lost the ticket and picks a seat randomly. But after that, the rest of the passengers will:
 
