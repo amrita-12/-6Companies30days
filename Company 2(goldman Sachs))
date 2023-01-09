@@ -1,0 +1,118 @@
+1. ## Max Points on a Line  ##
+class Solution {
+public:
+    int maxPoints(vector<vector<int>>& points) {
+        int ans=0;
+        for(int i=0;i<points.size();i++)
+        {
+            map<double,int>m;
+            int f=0;
+            for(int j=0;j<points.size();j++)
+            {
+                if(i==j)
+                continue;
+                int x1=points[i][0],y1=points[i][1],x2=points[j][0],y2=points[j][1];
+                if(x1==x2)
+                f++;
+                else{
+                   double slope=(double)(y1-y2)/(double)(x1-x2);
+                    m[slope]++;
+                }
+
+            }
+            ans=max(ans,f+1);
+            for(auto i:m)
+            {
+                ans=max(ans,i.second+1);
+            }
+            m.clear();
+        }
+        return ans;
+    }
+};
+
+
+2. Valid Square
+class Solution {
+public:
+int distance(vector<int>& p1, vector<int>& p2)
+{
+    int x1=p1[0],y1=p1[1];
+    int x2=p2[0],y2=p2[1];
+    return (x1-x2)*(x1-x2) + (y1-y2)*(y1-y2);
+}
+    bool validSquare(vector<int>& p1, vector<int>& p2, vector<int>& p3, vector<int>& p4) {
+        int d1,d2,d3,d4,d5,d6;
+        d1=distance(p1,p2);
+        d2=distance(p1,p3);
+        d3=distance(p1,p4);
+        d4=distance(p2,p3);
+        d5=distance(p2,p4);
+        d6=distance(p3,p4);
+        map<int,int>m;
+        m[d1]++;m[d2]++;m[d3]++;m[d4]++;m[d5]++;m[d6]++;
+        if(m.size()!=2)
+        return 0;
+        int side=0,diag=0;
+        for(auto i  :m)
+        {
+            if(i.second==4)
+                side = i.first;
+            if(i.second==2)
+                diag=i.first;
+
+              if(i.second!=2 && i.second!=4 )
+                    return 0;
+        }
+        return diag==2*side;
+    }
+};
+
+3. Factorial Trailing Zeroes
+class Solution {
+public:
+    int trailingZeroes(int n) {
+     int res=0;
+     while(n)
+     {
+         n=n/5;
+         res+=n;
+     } 
+     return res;
+
+    }
+};
+
+
+4.Number of Boomerangs
+class Solution {
+public:
+    int numberOfBoomerangs(vector<vector<int>>& points) {
+        int n=points.size();
+        int ans=0;
+        if(n<3)
+        return 0;
+        map<int,int>m;
+        for(int i=0;i<n;i++)
+        {
+            for(int j=0;j<n;j++)
+            {
+                if(i==j)
+                continue;
+                int x1=points[i][0],y1=points[i][1];
+                int x2 = points[j][0],y2=points[j][1];
+                int d = (x1-x2)*(x1-x2) + (y1-y2)*(y1-y2);
+                m[d]++;
+            }
+            for (auto i = m.begin(); i != m.end(); i++)
+                {
+                    int x = i->second;
+                    ans+=x*(x-1);
+                    
+                }
+                m.clear();
+        }
+        return ans;
+    }
+};
+
