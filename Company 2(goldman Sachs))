@@ -166,4 +166,342 @@ public:
     }
 };
 
+8. Maximum Points in an Archery Competition
+class Solution {
+public:
+int ans=0;
+vector<int>vec;
+void solve(int n,vector<int>alice,int score,vector<int>temp,int i)
+{
+    if(n==0 || i<0)
+    {
+        if(ans<score)
+        {
+            if(n>0)
+            {
+                temp[0]+=n;
+            }
+            ans=score;
+            vec=temp;
+        }
+        return;
+    }
+    if(n>=alice[i]+1)
+    {
+        temp[i]=alice[i]+1;
+        solve( n-alice[i]-1,alice,score+i,temp,i-1);
+        temp[i]=0;
+    }
+    solve(n,alice,score,temp,i-1);
+}
+    vector<int> maximumBobPoints(int numArrows, vector<int>& aliceArrows) {
+        vector<int>temp(12,0);
+        solve(numArrows,aliceArrows,0,temp,11);
+        return vec;
+    }
+};
+9.IPO
+class Solution {
+public:
+    int findMaximizedCapital(int k, int w, vector<int>& profits, vector<int>& capital) {
+     priority_queue<int>q;
+     vector< pair<int,int> > v;
+     for(int i=0;i<capital.size();i++)
+     v.push_back({capital[i],profits[i]});
+int i=0;
+    sort(v.begin(),v.end());
+  while(i<v.size() && k){
+            if(w>=v[i].first){
+                q.push(v[i].second);
+                i++;
+            }
+            else{
+                if(q.empty()){
+                    return w;
+                }
+                else{
+                    w+=q.top();
+                    q.pop();
+                    k--;
+                }
+            }
+        }
+        while(k-- && !q.empty()){
+            w+=q.top();
+            q.pop();
+        }
+        return w;
+
+
+
+
+    }
+};
+10. Number of People Aware of a Secret
+class Solution {
+public:
+    int peopleAwareOfSecret(int n, int delay, int forget) {
+        long long mod =1000000007;
+       vector<int> known (2005, 0);
+        known[1] = 1;
+        
+        for (int j = 1; j <= n; j ++) {
+            for (int to = j+delay; to < j+forget; to ++) 
+                known[to] = (known[to] + known[j]) % mod;
+        }
+        
+        int ans = 0;
+        for (int j = max(1, n-forget+1); j <= n; j ++)
+            ans = (ans + known[j]) % mod;
+        
+        return ans;
+    }
+};
+11. Invalid Transactions
+class Solution {
+public:
+    vector<string> invalidTransactions(vector<string>& transaction) {
+    vector<string>ans;
+    map<int,int>m;
+       set<int>temp;
+     vector<string>name,city;
+     vector<int>time,amount;
+      
+       for(auto s :transaction)
+       {
+           int flag=0;
+           stringstream ss(s);
+           string str;
+          while( getline(ss,str,','))
+          {
+            if(flag==0)
+            {
+               name.push_back(str);
+               flag=1;
+            }
+           else if(flag==1)
+            {
+                time.push_back(stoi(str));
+                flag++;
+            }
+            else if(flag==2)
+            {
+               amount.push_back(stoi(str));
+               flag++;
+
+            }
+            else{
+                city.push_back(str);
+            }
+
+          }
+
+           
+       } 
+       for(int i=0;i<transaction.size();i++)
+       {
+           for(int j=0;j<transaction.size();j++)
+           {
+               if(i==j)
+               continue;
+               if(name[i]==name[j] && city[i]!=city[j] && abs(time[i]-time[j])<=60 )
+               {
+                   if(m[i]==0)
+                   ans.push_back(transaction[i]);
+                   if(m[j]==0)
+                   ans.push_back(transaction[j]);
+                   m[i]++;m[j]++;
+               }
+               else {
+               
+               if(amount[i]>1000)
+               {
+                   if(m[i]==0)
+                   ans.push_back(transaction[i]);
+                   m[i]++;
+               }
+                if(amount[j]>1000)
+               {
+                   if(m[j]==0)
+                   ans.push_back(transaction[j]);
+                   m[j]++;
+               }
+
+               }
+           }
+       }
+      
+       return ans;
+    }
+};
+
+12.All Elements in Two Binary Search Trees
+class Solution {
+public:
+    vector<int> getAllElements(TreeNode* root1, TreeNode* root2) {
+       vector<int>ans;
+       stack<TreeNode*>st1,st2 ;
+       while(root1||root2||!st1.empty()||!st2.empty())
+       {
+           while(root1)
+           {
+               st1.push(root1);
+               root1=root1->left;
+           }
+           while(root2)
+           {
+               st2.push(root2);
+               root2=root2->left;
+           }
+           if(st1.empty()||(!st2.empty()&& st2.top()->val<=st1.top()->val))
+           {
+               root2=st2.top();
+               ans.push_back(root2->val);
+               st2.pop();
+               root2=root2->right;
+           }
+           else{
+               root1=st1.top();
+               ans.push_back(root1->val);
+               st1.pop();
+               root1=root1->right;
+           }
+
+       }
+       return ans;
+    }
+};
+
+13.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+14.Nice Pairs in Array 
+class Solution {
+public:
+int rev(int n)
+{
+    int ans=0;
+    while(n)
+    {
+        int x=n%10;
+        ans=ans*10+x;
+        n=n/10;
+
+    }
+    return ans;
+}
+    int countNicePairs(vector<int>& nums) {
+        map<int,long long>m;
+        long long ans=0;
+        for(int i=0;i<nums.size();i++)
+        {
+            nums[i] = nums[i]-rev(nums[i]);
+            m[nums[i]]++;
+        }
+        for(auto i:m)
+        {
+            long long t = i.second;
+            ans+= t*(t-1)/2;
+            ans=ans%(1000000007);
+        }
+        return ans;
+
+    }
+};
+15. Maximum Good People Based on Statements
+class Solution {
+public:
+int ans=0;
+int count(int n)
+{
+    int c=0;
+    while(n)
+    {
+        c++;
+        n=n&(n-1);
+    }
+    return c;
+}
+bool solve(vector<vector<int>>& statements,int mask)
+{  
+   
+
+   
+    int copy=mask;
+      
+            for(int pos=0;pos<statements.size();pos++){
+           
+           if(mask&(1<<pos)){
+                    
+            for(int i=0;i<statements[pos].size();i++){
+                if(statements[pos][i]==2){
+                    continue;
+                } else {
+                    //his statement on j is not consistent, therefore this 
+                    //assignment is not valid
+                    if(statements[pos][i]!=((copy>>i)&1)){
+                        return false;
+                    }
+                }
+            }}
+        }
+        return true;
+}
+    int maximumGood(vector<vector<int>>& statements) {
+        
+        
+        int n=statements.size();
+int ans=0;
+for(int i=0;i<(1<<n);i++)
+{
+    if(solve(statements,i)==1)
+    {
+        ans=max(ans,count(i));
+    }
+}
+return ans;
+        
+    }
+};
+
+
+
+
 
